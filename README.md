@@ -55,6 +55,8 @@ Extract faces from directory of frames:
 python faceswap.py extract -i ../data/video-frames -o ../data/faces
 ```
 
+Although you can directly extract faces from a video, it is recommended to extract frames, then faces in two separate steps since it allows more explicit removal of frames in which you do not want any faces extracted. There are examples where a frame may contain many many people, and face extraction could be slow for example. While there are some methods to help against this (e.g., exclude certain people from face extraction) we found the easiest way was manual selection of which frames contained the person of interest, then use only them as input to the face extractor.
+
 ### Model build
 
 Build a model on a specific GPU:
