@@ -172,7 +172,7 @@ ls /dbfs/.../wavs/*.wav | tail -n+100 > /dbfs/.../tacotron2/waveglow/train_files
 ls /dbfs/.../wavs/*.wav | head -n100 > /dbfs/.../tacotron2/waveglow/test_files.txt
 ```
 
-Modify `train.py` as per [waveglow/issues/35](https://github.com/NVIDIA/waveglow/issues/35)
+Modify `train.py` as per [waveglow/issues/35](https://github.com/NVIDIA/waveglow/issues/35):
 
 ```python
 def load_checkpoint(checkpoint_path, model, optimizer):
@@ -195,7 +195,7 @@ checkpoint_path=/dbfs/../tactron2/waveglow/waveglow_256channels.pt
 channels=256
 ```
 
-Fine-tune (transfer learn) the Waveglow model from NVIDIA [supplied checkpoint](https://drive.google.com/file/d/1WsibBTsuRg_SF2Z6L6NFRTT-NjEy1oTx/view?usp=sharing)
+Fine-tune (transfer learn) the Waveglow model from NVIDIA [supplied checkpoint](https://drive.google.com/file/d/1WsibBTsuRg_SF2Z6L6NFRTT-NjEy1oTx/view?usp=sharing):
 
 ```bash
 CUDA_VISIBLE_DEVICES=2 /databricks/python3/bin/python train.py -c config.json
