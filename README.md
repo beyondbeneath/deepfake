@@ -2,6 +2,8 @@
 
 Random collection of code snippets used to create Deep Fakes using Databricks for the GPU computation components. It is not expected these would be useful to the public, rather it's just a collection of js, Python and bash commands we used throughout the process.
 
+This was a collaborative project between myself and [@soswow](https://github.com/soswow).
+
 ## Repos
 
 * Face Swap: [deepfakes/faceswap](https://github.com/deepfakes/faceswap)
