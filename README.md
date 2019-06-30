@@ -188,7 +188,7 @@ from text import text_to_sequence
 #from denoiser import Denoiser
 import librosa
 
-def text_to_wav(checkpoint_path='/dbfs/../tacotron2_statedict.pt',
+def text_to_wav(tacotron_path='/dbfs/../tacotron2_statedict.pt',
                 waveglow_path='/dbfs/../waveglow_256channels.pt',
                 output_file='output.wav',
                text="This is a Deep Fake voice."):
@@ -197,7 +197,7 @@ def text_to_wav(checkpoint_path='/dbfs/../tacotron2_statedict.pt',
   hparams.sampling_rate = 22050
 
   model = load_model(hparams)
-  model.load_state_dict(torch.load(checkpoint_path)['state_dict'])
+  model.load_state_dict(torch.load(tacotron_path)['state_dict'])
   _ = model.cuda().eval().half()
 
   waveglow = torch.load(waveglow_path)['model']
