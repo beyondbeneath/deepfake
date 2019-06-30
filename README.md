@@ -144,6 +144,14 @@ for f in *.WAV; do ffmpeg -i "$f" -acodec pcm_s16le "16bit/$f"; done
 
 #### Tacotron (text -> mel-spectrogram)
 
+Replace the supplied train/test files with the new ones and update the paths. We just use the supplied filelist names to avoid having to change extra configuration. Replace `100` with whatever split you desire (probably should be ~10% of the total number of wavs?):
+
+```bash
+tail -n+100 meta.txt > /dbfs/.../tactron2/filelists/ljs_audio_text_train_filelist.txt
+head -n100 meta.txt > /dbfs/.../tactron2/filelists/ljs_audio_text_test_filelist.txt
+sed -i -- 's,DUMMY,/dbfs/.../wavs,g' /dbfs/.../tacotron2/filelists/lj*.txt
+```
+
 Fine-tune (transfer learn) the Tacotron model from the NVIDIA [supplied checkpoint](https://drive.google.com/file/d/1c5ZTuT7J08wLUoVZ2KkUs_VdZuJ86ZqA/view?usp=sharing):
 
 ```bash
@@ -157,7 +165,30 @@ CUDA_VISIBLE_DEVICES=1 /databricks/python3/bin/python train.py \
 
 #### Waveglow (vocoder: mel-spectrogram -> wave)
 
-Adjust the config.json:
+Create the train/test files which is a simple list of the `.wav` files. Replace `100` with whatever split you desire (probably should be ~10% of the total number of wavs?):
+
+```bash
+ls /dbfs/.../wavs/*.wav | tail -n+100 > /dbfs/.../tacotron2/waveglow/train_files.txt
+ls /dbfs/.../wavs/*.wav | head -n100 > /dbfs/.../tacotron2/waveglow/test_files.txt
+```
+
+Modify `train.py` as per [waveglow/issues/35](https://github.com/NVIDIA/waveglow/issues/35)
+
+```python
+def load_checkpoint(checkpoint_path, model, optimizer):
+    assert os.path.isfile(checkpoint_path)
+    checkpoint_dict = torch.load(checkpoint_path, map_location='cpu')
+    # iteration = checkpoint_dict['iteration']
+    iteration = 1
+    # optimizer.load_state_dict(checkpoint_dict['optimizer'])
+    model_for_loading = checkpoint_dict['model']
+    model.load_state_dict(model_for_loading.state_dict())
+    print("Loaded checkpoint '{}' (iteration {})" .format(
+          checkpoint_path, iteration))
+    return model, optimizer, iteration
+```
+
+Adjust the `config.json`:
 
 ```js
 checkpoint_path=/dbfs/../tactron2/waveglow/waveglow_256channels.pt
